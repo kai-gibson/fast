@@ -1,14 +1,14 @@
 [
 {
-  "directory": "/root/Documents/code/cxx/fast/build/debug",
-  "command": "/usr/sbin/c++  -I/root/Documents/code/cxx/fast/include -g -std=gnu++20 -o CMakeFiles/fast.dir/src/type.cxx.o -c /root/Documents/code/cxx/fast/src/type.cxx",
-  "file": "/root/Documents/code/cxx/fast/src/type.cxx",
-  "output": "CMakeFiles/fast.dir/src/type.cxx.o"
+  "directory": "C:/Users/GibsonK/Documents/RedcatDev/fast/build/debug",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -IC:/Users/GibsonK/Documents/RedcatDev/fast/include -IC:/Users/GibsonK/Documents/RedcatDev/fast/external/rapidjson/include -O0 -g -Xclang -gcodeview -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=gnu++20 -o CMakeFiles\\fast.dir\\src\\type.cxx.obj -c C:\\Users\\GibsonK\\Documents\\RedcatDev\\fast\\src\\type.cxx",
+  "file": "C:\\Users\\GibsonK\\Documents\\RedcatDev\\fast\\src\\type.cxx",
+  "output": "CMakeFiles\\fast.dir\\src\\type.cxx.obj"
 },
 {
-  "directory": "/root/Documents/code/cxx/fast/build/debug",
-  "command": "/usr/sbin/c++  -I/root/Documents/code/cxx/fast/include -g -std=gnu++20 -o CMakeFiles/fast.dir/src/main.cxx.o -c /root/Documents/code/cxx/fast/src/main.cxx",
-  "file": "/root/Documents/code/cxx/fast/src/main.cxx",
-  "output": "CMakeFiles/fast.dir/src/main.cxx.o"
+  "directory": "C:/Users/GibsonK/Documents/RedcatDev/fast/build/debug",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -IC:/Users/GibsonK/Documents/RedcatDev/fast/include -IC:/Users/GibsonK/Documents/RedcatDev/fast/external/rapidjson/include -O0 -g -Xclang -gcodeview -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=gnu++20 -o CMakeFiles\\fast.dir\\src\\main.cxx.obj -c C:\\Users\\GibsonK\\Documents\\RedcatDev\\fast\\src\\main.cxx",
+  "file": "C:\\Users\\GibsonK\\Documents\\RedcatDev\\fast\\src\\main.cxx",
+  "output": "CMakeFiles\\fast.dir\\src\\main.cxx.obj"
 }
 ]
