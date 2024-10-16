@@ -1,7 +1,5 @@
 #include "fast/archives/json.h"
-#include "fast/archives/sql.h"
 #include <iostream>
-#include <memory>
 #include <vector>
 
 struct Data : fast::Archivable {
@@ -31,30 +29,97 @@ struct Nest : fast::Archivable {
 };
 
 struct Test : fast::Archivable {
-  std::vector<int64_t> arr;
+  std::vector<Nest> arr;
 
   void load_metadata(fast::Archive& arc) {
     arc.add("arr", &arr);
   }
 };
 
+struct Big : public fast::Archivable {
+  int64_t id;
+  std::string name;
+  std::vector<Nest> purchases;
+  Data extra_data;
+
+  void load_metadata(fast::Archive& arc) {
+    arc.add("id", &id);
+    arc.add("name", &name);
+    arc.add("purchases", &purchases);
+    arc.add("extra_data", &extra_data);
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, Big& b) {
+    os << "id: " << b.id << " name: " << b.name << " purchases: [";
+    for (auto& elem : b.purchases) {
+      os << "id: " << elem.id << " points: " << elem.points << " ";
+    }
+
+    return os << b.extra_data;
+  }
+};
+
 int main() {
-  std::vector<Nest> vec;
-  std::vector<std::unique_ptr<fast::Archivable>> vec_two;
-  vec_two.push_back({});
 
-  //Data d;
+  Test test;
 
-  //fast::SqlArchive arc;
-  //arc.load_data({
-  //    {"id", "1234"},
-  //    {"name", "kai gibson"},
-  //    {"address", "224 Cardigan St"},
-  //});
+  fast::JsonArchive iar(R"(
+    {
+      "arr": [
+        {
+          "id": 120,
+          "points": 1200
+        },
+        {
+          "id": 1241,
+          "points": 834
+        },
+        {
+          "id": 99,
+          "points": 9900
+        }
+      ]
+    }
+  )");
 
-  //d.load_metadata(arc);
+  test.load_metadata(iar);
 
-  //arc.deserialise();
+  for (auto& elem : test.arr) {
+    std::cout << "id: " << elem.id << " points: " << elem.points << "\n";
+  }
 
-  //std::cout << d << "\n";
+  fast::JsonArchive new_iar(R"(
+    {
+      "id": 12,
+      "name": "kai Gibson",
+      "purchases": [
+        {
+          "id": 120,
+          "points": 1200
+        },
+        {
+          "id": 1241,
+          "points": 834
+        },
+        {
+          "id": 99,
+          "points": 9900
+        }
+      ],
+      "extra_data": {
+        "id": 19,
+        "name": "Kyle Gisbourne",
+        "address": "alternative_address"
+      }
+    }
+  )");
+
+  Big big;
+  
+  try {
+    big.load_metadata(new_iar);
+    std::cout << big << "\n";
+  } catch (std::exception& e) {
+    std::cout << e.what() << "\n";
+  }
 }
