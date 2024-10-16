@@ -10,7 +10,6 @@ class Archive;
 class Archivable {
 public:
    virtual void load_metadata(Archive& arc) = 0;
-   virtual ~Archivable() = 0;
 };
 
 } // namespace fast

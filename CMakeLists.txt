@@ -7,10 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(fast 
-  src/type.cxx
   src/main.cxx
+  src/archives/json.cxx
   include/fast/archive.h
-  include/fast/base.h
+  include/fast/archivable.h
+  include/fast/archives/json.h
 )
 
-target_include_directories(fast PRIVATE include)
+target_include_directories(fast PRIVATE 
+    include 
+    external/rapidjson/include
+)
