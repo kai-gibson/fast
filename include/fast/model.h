@@ -7,7 +7,7 @@ namespace fast {
 class Archive;
 
 // interface that makes a type serialisable
-class Archivable {
+class Model {
 public:
    virtual void load_metadata(Archive& arc) = 0;
 };

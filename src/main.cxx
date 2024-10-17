@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-struct Data : fast::Archivable {
+struct Data : fast::Model {
   int64_t id;
   std::string name;
   std::string address;
@@ -18,7 +18,7 @@ struct Data : fast::Archivable {
   }
 };
 
-struct Nest : fast::Archivable {
+struct Nest : fast::Model {
   int64_t id;
   int64_t points;
 
@@ -28,7 +28,7 @@ struct Nest : fast::Archivable {
   }
 };
 
-struct Test : fast::Archivable {
+struct Test : fast::Model {
   std::vector<Nest> arr;
 
   void load_metadata(fast::Archive& arc) {
@@ -36,16 +36,20 @@ struct Test : fast::Archivable {
   }
 };
 
-struct Big : public fast::Archivable {
+struct Big : public fast::Model {
   int64_t id;
   std::string name;
   std::vector<Nest> purchases;
   Data extra_data;
 
   void load_metadata(fast::Archive& arc) {
+		std::cout << "add id\n";
     arc.add("id", &id);
+		std::cout << "add name\n";
     arc.add("name", &name);
+		std::cout << "add purchases\n";
     arc.add("purchases", &purchases);
+		std::cout << "add extra_data\n";
     arc.add("extra_data", &extra_data);
   }
 
@@ -63,7 +67,7 @@ int main() {
 
   Test test;
 
-  fast::JsonArchive iar(R"(
+  fast::JsonIArchive iar(R"(
     {
       "arr": [
         {
@@ -88,10 +92,10 @@ int main() {
     std::cout << "id: " << elem.id << " points: " << elem.points << "\n";
   }
 
-  fast::JsonArchive new_iar(R"(
+  fast::JsonIArchive new_iar(R"(
     {
       "id": 12,
-      "name": "kai Gibson",
+      "name": "Kai Gibson",
       "purchases": [
         {
           "id": 120,
@@ -122,4 +126,12 @@ int main() {
   } catch (std::exception& e) {
     std::cout << e.what() << "\n";
   }
+
+  std::cout << "init archive\n";
+  fast::JsonOArchive oar;
+  std::cout << "load_metadata\n";
+  big.load_metadata(oar);
+  std::cout << "output json\n";
+  std::cout << "back to json: " << oar.str() << "\n";
+
 }

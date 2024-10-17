@@ -8,7 +8,7 @@
 #include "fast/archives/json.h"
 
 /*
- * JsonArchive implementation
+ * JsonIArchive implementation
  * TODO:
  *  - make exception type
  *  - handle arrays with differently typed elements
@@ -18,7 +18,7 @@
 
 namespace fast {
 
-JsonArchive::JsonArchive(rj::Value* json_root) {
+JsonIArchive::JsonIArchive(rj::Value* json_root) {
   if (json_root) {
     this->json_root = json_root;
   } else {
@@ -26,8 +26,9 @@ JsonArchive::JsonArchive(rj::Value* json_root) {
   }
 }
 
-JsonArchive::JsonArchive(std::string json_str) {
-  rj::ParseResult res = json_doc.Parse(json_str.c_str());
+JsonIArchive::JsonIArchive(const char* json_str) {
+  rj::ParseResult res = json_doc.Parse(json_str);
+
   if (!res) {
     std::stringstream err;
     err << "JSON Parse Error " << rj::GetParseError_En(res.Code()) << " "
@@ -36,12 +37,13 @@ JsonArchive::JsonArchive(std::string json_str) {
     std::cerr << err.str();
     throw std::runtime_error("parse error");
   }
+
   this->json_root = &json_doc;
 }
 
-void JsonArchive::add(std::string name, int64_t* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, int64_t* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsInt64()) {
       *data = json_val.GetInt64();
@@ -62,9 +64,9 @@ void JsonArchive::add(std::string name, int64_t* data) {
   }
 }
 
-void JsonArchive::add(std::string name, double* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, double* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsDouble()) {
       *data = json_val.GetDouble();
@@ -85,9 +87,9 @@ void JsonArchive::add(std::string name, double* data) {
   }
 }
 
-void JsonArchive::add(std::string name, std::string* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, std::string* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsString()) {
       *data = json_val.GetString();
@@ -108,9 +110,9 @@ void JsonArchive::add(std::string name, std::string* data) {
   }
 }
 
-void JsonArchive::add(std::string name, bool* data) { 
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, bool* data) { 
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsBool()) {
       *data = json_val.GetBool();
@@ -131,13 +133,13 @@ void JsonArchive::add(std::string name, bool* data) {
   }
 }
 
-void JsonArchive::add(std::string name, Archivable* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, Model* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsObject()) {
       // recursive assign to object
-      JsonArchive iar(&json_val);
+      JsonIArchive iar(&json_val);
       data->load_metadata(iar);
 
     } else {
@@ -156,9 +158,9 @@ void JsonArchive::add(std::string name, Archivable* data) {
   }
 }
 
-void JsonArchive::add(std::string name, std::vector<int64_t>* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, std::vector<int64_t>* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsArray()) {
       // remove all existing elements
@@ -193,9 +195,9 @@ void JsonArchive::add(std::string name, std::vector<int64_t>* data) {
   }
 }
 
-void JsonArchive::add(std::string name, std::vector<double>* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, std::vector<double>* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsArray()) {
       // remove all existing elements
@@ -230,9 +232,9 @@ void JsonArchive::add(std::string name, std::vector<double>* data) {
   }
 }
 
-void JsonArchive::add(std::string name, std::vector<std::string>* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, std::vector<std::string>* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsArray()) {
       // remove all existing elements
@@ -268,9 +270,9 @@ void JsonArchive::add(std::string name, std::vector<std::string>* data) {
   }
 }
 
-void JsonArchive::add(std::string name, std::vector<bool>* data) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& json_val = (*json_root)[name.c_str()];
+void JsonIArchive::add(const char* name, std::vector<bool>* data) {
+  if (json_root->HasMember(name)) {
+    rj::Value& json_val = (*json_root)[name];
 
     if (json_val.IsArray()) {
       // remove all existing elements
@@ -307,11 +309,9 @@ void JsonArchive::add(std::string name, std::vector<bool>* data) {
   }
 }
 
-void JsonArchive::load_data(std::string json_str) { this->json_str = json_str; }
-
-size_t JsonArchive::get_obj_arr_count(std::string name) {
-  if (json_root->HasMember(name.c_str())) {
-    rj::Value& val = (*json_root)[name.c_str()];
+size_t JsonIArchive::get_obj_arr_count(const char* name) {
+  if (json_root->HasMember(name)) {
+    rj::Value& val = (*json_root)[name];
 
     if (val.IsArray()) {
       return val.Size();
@@ -330,12 +330,12 @@ size_t JsonArchive::get_obj_arr_count(std::string name) {
   }
 }
 
-void JsonArchive::assign_arr_val(std::string name, size_t indx, Archivable* obj) {
-  rj::Value& val = (*json_root)[name.c_str()]; 
+void JsonIArchive::assign_arr_val(const char* name, size_t indx, Model* obj) {
+  rj::Value& val = (*json_root)[name]; 
   rj::Value& elem = val[indx];
 
   if (elem.IsObject()) {
-    JsonArchive iar(&elem);
+    JsonIArchive iar(&elem);
     obj->load_metadata(iar);
   } else {
     std::stringstream err;
@@ -347,214 +347,101 @@ void JsonArchive::assign_arr_val(std::string name, size_t indx, Archivable* obj)
   }
 }
 
-void JsonArchive::serialise() {}
-void JsonArchive::deserialise() {
-  //if (json_doc.Parse(json_str.c_str()).HasParseError()) {
-  //  std::runtime_error("Error parsing json, invalid json");
-  //}
+std::string JsonIArchive::str() {
+  return json_root->GetString();
+}
 
-  //json_root = &json_doc;
 
-  //std::stringstream err;
+// Json Output Archive
 
-  //for (auto& [key, value] : this->map) {
-  //  if (json_root->HasMember(key.c_str())) {
-  //    rj::Value& json_val = (*json_root)[key.c_str()];
+// constructors
+JsonOArchive::JsonOArchive() {
+  writer = std::make_shared<rj::Writer<rj::StringBuffer>>(s);
+  writer->StartObject(); 
+}
+JsonOArchive::JsonOArchive(std::shared_ptr<rj::Writer<rj::StringBuffer>>& writer) { 
+  this->writer = writer;
+}
 
-  //    switch (value.index()) {
-  //      case JsonType::Int64: {
-  //        if (json_val.IsInt64()) {
-  //          int64_t* ptr = std::get<JsonType::Int64>(value);
-  //          *ptr = json_val.GetInt64();
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
+// add methods
+void JsonOArchive::add(const char* name, int64_t* data) {
+  writer->Key(name);
+  writer->Int64(*data);
+}
 
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
+void JsonOArchive::add(const char* name, double* data) {
+  writer->Key(name);
+  writer->Double(*data);
+}
 
-  //      case JsonType::Float64: {
-  //        if (json_val.IsDouble()) {
-  //          double* ptr = std::get<JsonType::Float64>(value);
-  //          *ptr = json_val.GetDouble();
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
+void JsonOArchive::add(const char* name, std::string* data) {
+  writer->Key(name);
+  writer->String(data->c_str());
+}
 
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
+void JsonOArchive::add(const char* name, bool* data) {
+  writer->Key(name);
+  writer->Bool(*data);
+}
 
-  //      case JsonType::String: {
-  //        if (json_val.IsString()) {
-  //          std::string* ptr = std::get<JsonType::String>(value);
-  //          *ptr = json_val.GetString();
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
+void JsonOArchive::add(const char* name, Model* data) {
+  writer->Key(name);
+  writer->StartObject();
 
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
+  JsonOArchive oar(writer);
+  data->load_metadata(oar);
 
-  //      case JsonType::Bool: {
-  //        if (json_val.IsBool()) {
-  //          bool* ptr = std::get<JsonType::Bool>(value);
-  //          *ptr = json_val.GetBool();
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
+  writer->EndObject();
+}
 
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
+void JsonOArchive::add(const char* name, std::vector<int64_t>* data) {
+  writer->Key(name);
+  writer->StartArray();
+  for (auto& elem : *data) { writer->Int64(elem); }
+  writer->EndArray();
+}
 
-  //      case JsonType::Object: {
-  //        if (json_val.IsObject()) {
-  //          JsonArchive iar(&json_val);
+void JsonOArchive::add(const char* name, std::vector<double>* data) {
+  writer->Key(name);
+  writer->StartArray();
+  for (auto& elem : *data) { writer->Double(elem); }
+  writer->EndArray();
+}
 
-  //          Archivable* ptr = std::get<JsonType::Object>(value);
-  //          ptr->load_metadata(iar);
-  //          iar.deserialise();
+void JsonOArchive::add(const char* name, std::vector<std::string>* data) {
+  writer->Key(name);
+  writer->StartArray();
+  for (auto& elem : *data) { writer->String(elem.c_str()); }
+  writer->EndArray();
+}
 
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
+void JsonOArchive::add(const char* name, std::vector<bool>* data) {
+  writer->Key(name);
+  writer->StartArray();
+  for (auto elem : *data) { writer->Bool(elem); }
+  writer->EndArray();
+}
 
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
+size_t JsonOArchive::get_obj_arr_count(const char* name) { return 0; }
 
-  //      case JsonType::ArrayInt64: {
-  //        if (json_val.IsArray()) {
-  //          std::vector<int64_t>* int_vec_ptr =
-  //              std::get<JsonType::ArrayInt64>(value);
+void JsonOArchive::assign_arr_val(const char* name, size_t indx, Model* obj) {
+  if (indx == 0) {
+    writer->Key(name);
+    writer->StartArray();
+  } 
 
-  //          for (auto& elem : json_val.GetArray()) {
-  //            if (elem.IsInt64()) {
-  //              int_vec_ptr->push_back(elem.GetInt64());
-  //            } else {
-  //              err << "Error, key \"" << key << "\" type is "
-  //                  << json_val.GetType() << " but "
-  //                  << JSON_TYPE_NAMES[value.index()] << " was expected";
-  //            }
-  //          }
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
+  writer->StartObject();
 
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
+  JsonOArchive oar(writer);
+  obj->load_metadata(oar);
+  
+  writer->EndObject();
+  if (indx == -1) writer->EndArray();
+}
 
-  //      case JsonType::ArrayFloat64: {
-  //        if (json_val.IsArray()) {
-  //          std::vector<double>* int_vec_ptr =
-  //              std::get<JsonType::ArrayFloat64>(value);
-
-  //          for (auto& elem : json_val.GetArray()) {
-  //            if (elem.IsDouble()) {
-  //              int_vec_ptr->push_back(elem.GetDouble());
-  //            } else {
-  //              err << "Error, key \"" << key << "\" type is "
-  //                  << json_val.GetType() << " but "
-  //                  << JSON_TYPE_NAMES[value.index()] << " was expected";
-  //            }
-  //          }
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
-
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
-
-  //      case JsonType::ArrayBool: {
-  //        if (json_val.IsArray()) {
-  //          std::vector<bool>* int_vec_ptr =
-  //              std::get<JsonType::ArrayBool>(value);
-
-  //          for (auto& elem : json_val.GetArray()) {
-  //            if (elem.IsBool()) {
-  //              int_vec_ptr->push_back(elem.GetBool());
-  //            } else {
-  //              err << "Error, key \"" << key << "\" type is "
-  //                  << json_val.GetType() << " but "
-  //                  << JSON_TYPE_NAMES[value.index()] << " was expected";
-  //            }
-  //          }
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
-
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
-
-  //      case JsonType::ArrayString: {
-  //        if (json_val.IsArray()) {
-  //          std::vector<std::string>* int_vec_ptr =
-  //              std::get<JsonType::ArrayString>(value);
-
-  //          for (auto& elem : json_val.GetArray()) {
-  //            if (elem.IsString()) {
-  //              int_vec_ptr->push_back(elem.GetString());
-  //            } else {
-  //              err << "Error, key \"" << key << "\" type is "
-  //                  << json_val.GetType() << " but "
-  //                  << JSON_TYPE_NAMES[value.index()] << " was expected";
-  //            }
-  //          }
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
-
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
-
-  //      case JsonType::ArrayObject: {
-  //        if (json_val.IsArray()) {
-  //          std::vector<Archivable>* obj_vec_ptr =
-  //              std::get<JsonType::ArrayObject>(value);
-
-  //          for (auto& elem : json_val.GetArray()) {
-  //            if (elem.IsObject()) {
-  //              json_val.GetArray().Size();
-
-  //              JsonArchive iar(&elem);
-
-  //              // next challenge...
-  //            } else {
-  //              err << "Error, key \"" << key << "\" type is "
-  //                  << json_val.GetType() << " but "
-  //                  << JSON_TYPE_NAMES[value.index()] << " was expected";
-  //            }
-  //          }
-  //        } else {
-  //          err << "Error, key \"" << key << "\" type is " << json_val.GetType()
-  //              << " but " << JSON_TYPE_NAMES[value.index()] << " was expected";
-
-  //          throw std::runtime_error(err.str());
-  //        }
-  //        break;
-  //      }
-  //    }
-  //  } else {
-  //    err << "error, key " << key << " does not exist in parsed json\n";
-  //    throw std::runtime_error(err.str());
-  //  }
-  //}
+std::string JsonOArchive::str() {
+  writer->EndObject();
+  return s.GetString();
 }
 
 }  // namespace fast

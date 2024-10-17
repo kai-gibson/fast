@@ -4,12 +4,13 @@
 #include <array>
 #include <sstream>
 #include <stdexcept>
-#include <string>
+#include <string> 
 #include <unordered_map>
 #include <variant>
 #include <vector>
+#include <type_traits>
 
-#include "fast/archivable.h"
+#include "fast/model.h"
 
 namespace fast {
 
@@ -31,44 +32,59 @@ namespace fast {
  */
 
 template <class T>
-concept DerivedFromArchivable = std::derived_from<T, Archivable>;
+concept DerivedFromModel = std::derived_from<T, Model>;
 
 class Archive {
  public:
-
-  template<DerivedFromArchivable T>
-  void add(std::string name, std::vector<T>* data) {
+  template<DerivedFromModel D>
+  void add(const char* name, std::vector<D>* data) {
     // base method demands enough elements in vector, then passes on to other
     // derived add methods?
 
     // get_arr_count should throw if it's not an array, so after this it's safe
     size_t requested_size = get_obj_arr_count(name);
 
-    // clear vector
-    data->clear();
+    // input archive
+    if (requested_size) {
+      // clear vector
+      data->clear();
 
-    // create enough elements
-    for (size_t i=0; i < requested_size; i++) {
-      data->push_back(T());
-      assign_arr_val(name, i, &data->back());
+      // create enough elements
+      for (size_t i=0; i < requested_size; i++) {
+        data->push_back(D());
+        assign_arr_val(name, i, &data->back());
+      }
+    } else {
+      // output archive
+      for (size_t i{}; i<data->size(); i++) {
+        if (i == data->size()-1) {
+          assign_arr_val("", -1, &data->at(i));
+        } else if (i == 0) {
+          assign_arr_val(name, i, &data->at(i));
+        } else {
+          assign_arr_val("", i, &data->at(i));
+        }
+      }
     }
   }
+  // we use const char* because they're smaller and never modified
+  virtual void add(const char* name, int64_t* data) = 0;
+  virtual void add(const char* name, double* data) = 0;
+  virtual void add(const char* name, std::string* data) = 0;
+  virtual void add(const char* name, bool* data) = 0;
+  virtual void add(const char* name, Model* data) = 0;
+  virtual void add(const char* name, std::vector<int64_t>* data) = 0;
+  virtual void add(const char* name, std::vector<double>* data) = 0;
+  virtual void add(const char* name, std::vector<std::string>* data) = 0;
+  virtual void add(const char* name, std::vector<bool>* data) = 0;
 
-  virtual void add(std::string name, int64_t* data) = 0;
-  virtual void add(std::string name, double* data) = 0;
-  virtual void add(std::string name, std::string* data) = 0;
-  virtual void add(std::string name, bool* data) = 0;
-  virtual void add(std::string name, Archivable* data) = 0;
-  virtual void add(std::string name, std::vector<int64_t>* data) = 0;
-  virtual void add(std::string name, std::vector<double>* data) = 0;
-  virtual void add(std::string name, std::vector<std::string>* data) = 0;
-  virtual void add(std::string name, std::vector<bool>* data) = 0;
-  virtual size_t get_obj_arr_count(std::string name) = 0;
-  virtual void assign_arr_val(std::string name, size_t indx, Archivable* obj) = 0;
-  //virtual void add(std::string name, std::vector<Archivable>* data) = 0;
-  virtual void deserialise() = 0;
-  virtual void serialise() = 0;
 
+  // helper methods to facilitate serialisation of vectors of objects
+  // TODO change these to make sense for input and output
+  virtual size_t get_obj_arr_count(const char* name) = 0;
+  virtual void assign_arr_val(const char* name, size_t indx, Model* obj) = 0;
+
+  virtual std::string str() = 0;
 };
 
 }  // namespace fast
