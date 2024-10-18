@@ -1,4 +1,9 @@
+#include "fast/db/create_db.h"
+#include "fast/macros.h"
 #include "fast/archives/json.h"
+#include "fast/json.h"
+
+#include "sqlite3.h"
 #include <iostream>
 #include <vector>
 
@@ -7,11 +12,7 @@ struct Data : fast::Model {
   std::string name;
   std::string address;
 
-  void load_metadata(fast::Archive& arc) {
-    arc.add("id", &id);
-    arc.add("name", &name);
-    arc.add("address", &address);
-  }
+  FAST_LOAD_METADATA(id, name, address);
 
   friend std::ostream& operator<<(std::ostream& os, Data& d) {
     return os << "{" << d.id << ", " << d.name << ", " << d.address << "}";
@@ -22,10 +23,7 @@ struct Nest : fast::Model {
   int64_t id;
   int64_t points;
 
-  void load_metadata(fast::Archive& arc) {
-    arc.add("id", &id);
-    arc.add("points", &points);
-  }
+  FAST_LOAD_METADATA(id, points);
 };
 
 struct Test : fast::Model {
@@ -42,16 +40,8 @@ struct Big : public fast::Model {
   std::vector<Nest> purchases;
   Data extra_data;
 
-  void load_metadata(fast::Archive& arc) {
-		std::cout << "add id\n";
-    arc.add("id", &id);
-		std::cout << "add name\n";
-    arc.add("name", &name);
-		std::cout << "add purchases\n";
-    arc.add("purchases", &purchases);
-		std::cout << "add extra_data\n";
-    arc.add("extra_data", &extra_data);
-  }
+
+  FAST_LOAD_METADATA(id, name, purchases, extra_data);
 
   friend std::ostream& operator<<(std::ostream& os, Big& b) {
     os << "id: " << b.id << " name: " << b.name << " purchases: [";
@@ -134,4 +124,33 @@ int main() {
   std::cout << "output json\n";
   std::cout << "back to json: " << oar.str() << "\n";
 
+  std::cout << "user def\n";
+
+
+
+  struct User : public fast::Model {
+    int64_t id;
+    std::string name;
+    std::string address;
+    double balance;
+
+    FAST_LOAD_METADATA(id, name, address, balance);
+  };
+
+  using fast::DBProvider;
+  auto [db, err] = fast::create_db(DBProvider::SQLite, "example.db");
+
+  if (err) {
+    std::cerr << "err: " << err.detail << "\n";
+    return EXIT_FAILURE;
+  }
+
+  std::vector<User> users;
+  err = db->select("SELECT * FROM tbl_users", &users);
+
+  if (!err) {
+    for (User& user : users) {
+      std::cout << "user data as json: " << fast::to_json(user) << "\n";
+    }
+  }
 }

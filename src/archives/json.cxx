@@ -436,7 +436,7 @@ void JsonOArchive::assign_arr_val(const char* name, size_t indx, Model* obj) {
   obj->load_metadata(oar);
   
   writer->EndObject();
-  if (indx == -1) writer->EndArray();
+  if (indx == static_cast<size_t>(-1)) writer->EndArray();
 }
 
 std::string JsonOArchive::str() {

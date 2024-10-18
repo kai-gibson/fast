@@ -9,6 +9,13 @@
 * Fast at runtime and fast to compile -- i.e. no abuse of templates, a
   statically linked library instead of header-only
 
+## TODO:
+ [x] Json In/Out
+ [] SQL In
+ [] xml In/Out 
+ [] toml In/Out 
+ [] web server
+
 
 ## Components:
 This project leans on several existing, thoroughly tested and fast c++ libraries
