@@ -6,6 +6,7 @@
 #include "sqlite3.h"
 #include <iostream>
 #include <vector>
+#include <format>
 
 struct Data : fast::Model {
   int64_t id;
@@ -126,8 +127,6 @@ int main() {
 
   std::cout << "user def\n";
 
-
-
   struct User : public fast::Model {
     int64_t id;
     std::string name;
@@ -152,5 +151,17 @@ int main() {
     for (User& user : users) {
       std::cout << "user data as json: " << fast::to_json(user) << "\n";
     }
+  } else {
+    std::cerr << "error " << err.result_code << " " << err.detail << "\n";
   }
+
+  //err = db->query(std::format(R"(
+  //  INSERT INTO tbl_users 
+  //    (id, name, address) 
+  //  VALUES ({}, {}, {}))",
+  //      10, "\"uzbekh\"", "\"Dagestan\"").c_str());
+
+  if (err) {
+    std::cerr << "error inserting: " << err.detail << "\n";
+  } 
 }

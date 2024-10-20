@@ -15,7 +15,7 @@ int callback(void* data, int argc, char** col_data, char** col_names) {
 
   // fill the rows
   for (int i = 0; i < argc; i++) {
-    rows->back()[col_names[i]] = col_data[i];
+    rows->back()[col_names[i]] = col_data[i] ? col_data[i] : "null";
   }
 
   return 0;
@@ -39,6 +39,16 @@ SQLite::~SQLite() {
 DBResult SQLite::query(const char* stmt) {
   DBResult err{};
 
+  char* err_msg;
+  int rc = sqlite3_exec(db, stmt, &sqlite::callback, nullptr, &err_msg);
+
+  if (rc != SQLITE_OK) {
+    err = {rc, std::string(err_msg)};
+
+    sqlite3_free(err_msg);
+    return err;
+  }
+  
   return err;
 }
 
@@ -46,12 +56,15 @@ void SQLite::rollback() {
 }
 
 DBResult SQLite::populate_rows(const char* stmt, Rows* rows) {
-  int rc = sqlite3_exec(db, stmt, &sqlite::callback, (void*)rows, nullptr);
   DBResult err;
 
+  char* err_msg {};
+  int rc = sqlite3_exec(db, stmt, &sqlite::callback, (void*)rows, &err_msg);
+
   if (rc != SQLITE_OK) {
-    // TODO pass sqlite err msg along
-    err = {rc, "error executing select statement"};
+    err = {rc, std::string(err_msg)};
+
+    sqlite3_free(err_msg);
     return err;
   }
   
@@ -66,7 +79,6 @@ DBResult SQLite::assign_row_to_model(Row& row, Model* obj) {
     obj->load_metadata(iar);
   } catch (std::runtime_error& e) {
     err = {1, e.what()};
-    return err;
   }
 
   return err;

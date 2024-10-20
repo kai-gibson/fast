@@ -19,7 +19,7 @@ struct DBProvider {
 
 struct DBResult {
   int result_code;
-  const char* detail;
+  std::string detail;
   operator bool() const { return result_code != 0; }
 };
 
@@ -34,17 +34,14 @@ class Database {
   
     Rows rows;
 
-    populate_rows(stmt, &rows);
+    err = populate_rows(stmt, &rows);
+    if (err) return err;
 
     for (Row& row : rows) {
       obj->push_back(D());
 
-      try {
-        assign_row_to_model(row, &obj->back());
-      } catch (std::runtime_error& e) {
-        err = {1, e.what()};
-        return err;
-      }
+      err = assign_row_to_model(row, &obj->back());
+      if (err) return err;
     }
 
     return err;
