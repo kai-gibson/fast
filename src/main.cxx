@@ -5,6 +5,8 @@
 
 #include "sqlite3.h"
 #include <iostream>
+#include <ostream>
+#include <sstream>
 #include <vector>
 #include <format>
 
@@ -145,23 +147,28 @@ int main() {
   }
 
   std::vector<User> users;
-  err = db->select("SELECT * FROM tbl_users", &users);
+  err = db->select("SELECT * FROM tbl_users;", &users);
 
   if (!err) {
     for (User& user : users) {
       std::cout << "user data as json: " << fast::to_json(user) << "\n";
     }
-  } else {
-    std::cerr << "error " << err.result_code << " " << err.detail << "\n";
+  } else {  
+    std::stringstream ss;
+
+    std::cout << "error getting users code: " << (int)err.result_code 
+              << " detail: " << err.detail << "\n";
+
+    std::cout << "ss" << err.detail<< "ss " << err.detail.size() << "\n";
   }
 
-  err = db->query(std::format(R"(
-    INSERT INTO tbl_users 
-      (id, name, address) 
-    VALUES ({}, {}, {}))",
-        10, "\"uzbekh\"", "\"Dagestan\"").c_str());
+  //err = db->query(std::format(R"(
+  //  INSERT INTO tbl_users 
+  //    (id, name, address) 
+  //  VALUES ({}, '{}', '{}'))",
+  //      10, "uzbekh", "Dagestan").c_str());
 
-  if (err) {
-    std::cerr << "error " << err.result_code << " " << err.detail << "\n";
-  } 
+  //if (err) {
+  //  std::cerr << "error " << err.result_code << " " << err.detail << "\n";
+  //} 
 }

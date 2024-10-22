@@ -8,8 +8,9 @@ class Archive;
 
 // interface that makes a type serialisable
 class Model {
-public:
-   virtual void load_metadata(Archive& arc) = 0;
+ public:
+  virtual ~Model() {}
+  virtual void load_metadata(Archive& arc) = 0;
 };
 
 } // namespace fast

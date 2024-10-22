@@ -93,45 +93,6 @@ void SQLiteIArchive::add(const char* name, std::vector<bool>* data) {
 }
 
 
-// implement optional types
-void SQLiteIArchive::add(const char* name, std::optional<int64_t>* data) {
-}
-
-void SQLiteIArchive::add(const char* name, std::optional<double*> data) {
-	
-}
-
-void SQLiteIArchive::add(const char* name, std::optional<std::string*> data) {
-	
-}
-
-void SQLiteIArchive::add(const char* name, std::optional<bool*> data) {
-	
-}
-
-void SQLiteIArchive::add(const char* name, std::optional<Model*> data) {
-	
-}
-
-
-void SQLiteIArchive::add(const char* name,
-         std::optional<std::vector<int64_t>*> data) {
-	
-}
-
-void SQLiteIArchive::add(const char* name,
-         std::optional<std::vector<double>*> data) {
-	
-}
-
-void SQLiteIArchive::add(const char* name,
-         std::optional<std::vector<std::string>*> data) {
-}
-
-void add(const char* name,
-                   std::optional<std::vector<bool>*> data) {
-	
-}
 
 
 

@@ -5,10 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(lldb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/debug/fast",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
             "type": "lldb",
             "request": "launch",
             "name": "fuck",
-            "program": "${workspaceFolder}/build/debug/fast.exe",
+            "program": "${workspaceFolder}/build/debug/fast",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

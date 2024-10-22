@@ -1,16 +1,21 @@
 #include "fast/db/create_db.h"
 
+#include <iostream>
 namespace fast {
 
 std::tuple<std::shared_ptr<Database>, DBResult> create_db(
     DBProvider::Provider provider, const char* conn_str) {
 
   std::shared_ptr<Database> db;
-  DBResult err;
+  DBResult err {0, ""};
   
   switch (provider) {
     case DBProvider::SQLite:
-      db = std::make_shared<SQLite>(conn_str);
+      try {
+        db = std::make_shared<SQLite>(conn_str);
+      } catch (std::runtime_error& e) {
+        return {nullptr, {-1, e.what()}};
+      }
 			break;
     case DBProvider::Firebird:
       err = {1, "not implemented"};

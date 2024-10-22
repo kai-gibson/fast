@@ -58,11 +58,11 @@ void SQLite::rollback() {
 DBResult SQLite::populate_rows(const char* stmt, Rows* rows) {
   DBResult err;
 
-  char* err_msg {};
+  char* err_msg;
   int rc = sqlite3_exec(db, stmt, &sqlite::callback, (void*)rows, &err_msg);
 
   if (rc != SQLITE_OK) {
-    err = {rc, std::string(err_msg)};
+    err = {rc, err_msg};
 
     sqlite3_free(err_msg);
     return err;

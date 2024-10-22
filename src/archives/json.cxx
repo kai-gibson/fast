@@ -1,9 +1,9 @@
+#include <rapidjson/error/en.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-#include <rapidjson/error/en.h>
 
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 #include "fast/archives/json.h"
 
@@ -50,9 +50,8 @@ void JsonIArchive::add(const char* name, int64_t* data) {
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
-          << JSON_TYPE_NAMES[json_val.GetType()]
-          << " but Int64 was expected";
+      err << "Error, key \"" << name << "\" type is "
+          << JSON_TYPE_NAMES[json_val.GetType()] << " but Int64 was expected";
 
       throw std::runtime_error(err.str());
     }
@@ -73,9 +72,8 @@ void JsonIArchive::add(const char* name, double* data) {
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
-          << JSON_TYPE_NAMES[json_val.GetType()]
-          << " but Float64 was expected";
+      err << "Error, key \"" << name << "\" type is "
+          << JSON_TYPE_NAMES[json_val.GetType()] << " but Float64 was expected";
 
       throw std::runtime_error(err.str());
     }
@@ -96,9 +94,8 @@ void JsonIArchive::add(const char* name, std::string* data) {
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
-          << JSON_TYPE_NAMES[json_val.GetType()]
-          << " but String was expected";
+      err << "Error, key \"" << name << "\" type is "
+          << JSON_TYPE_NAMES[json_val.GetType()] << " but String was expected";
 
       throw std::runtime_error(err.str());
     }
@@ -110,7 +107,7 @@ void JsonIArchive::add(const char* name, std::string* data) {
   }
 }
 
-void JsonIArchive::add(const char* name, bool* data) { 
+void JsonIArchive::add(const char* name, bool* data) {
   if (json_root->HasMember(name)) {
     rj::Value& json_val = (*json_root)[name];
 
@@ -119,9 +116,8 @@ void JsonIArchive::add(const char* name, bool* data) {
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
-          << JSON_TYPE_NAMES[json_val.GetType()]
-          << " but Bool was expected";
+      err << "Error, key \"" << name << "\" type is "
+          << JSON_TYPE_NAMES[json_val.GetType()] << " but Bool was expected";
 
       throw std::runtime_error(err.str());
     }
@@ -145,8 +141,8 @@ void JsonIArchive::add(const char* name, Model* data) {
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " << JSON_TYPE_NAMES[json_val.GetType()]
-          << " but Object was expected";
+      err << "Error, key \"" << name << "\" type is "
+          << JSON_TYPE_NAMES[json_val.GetType()] << " but Object was expected";
 
       throw std::runtime_error(err.str());
     }
@@ -172,16 +168,15 @@ void JsonIArchive::add(const char* name, std::vector<int64_t>* data) {
         } else {
           std::stringstream err;
 
-          err << "Error, key \"" << name << "\" type is " 
+          err << "Error, key \"" << name << "\" type is "
               << JSON_TYPE_NAMES[json_val.GetType()]
               << " but Array<Int64> was expected";
         }
-
       }
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
+      err << "Error, key \"" << name << "\" type is "
           << JSON_TYPE_NAMES[json_val.GetType()]
           << " but Array<Int64> was expected";
 
@@ -209,16 +204,15 @@ void JsonIArchive::add(const char* name, std::vector<double>* data) {
         } else {
           std::stringstream err;
 
-          err << "Error, key \"" << name << "\" type is " 
+          err << "Error, key \"" << name << "\" type is "
               << JSON_TYPE_NAMES[json_val.GetType()]
               << " but Array<Float64> was expected";
         }
-
       }
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
+      err << "Error, key \"" << name << "\" type is "
           << JSON_TYPE_NAMES[json_val.GetType()]
           << " but Array<Float64> was expected";
 
@@ -247,16 +241,15 @@ void JsonIArchive::add(const char* name, std::vector<std::string>* data) {
         } else {
           std::stringstream err;
 
-          err << "Error, key \"" << name << "\" type is " 
+          err << "Error, key \"" << name << "\" type is "
               << JSON_TYPE_NAMES[json_val.GetType()]
               << " but Array<String> was expected";
         }
-
       }
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
+      err << "Error, key \"" << name << "\" type is "
           << JSON_TYPE_NAMES[json_val.GetType()]
           << " but Array<String> was expected";
 
@@ -285,17 +278,16 @@ void JsonIArchive::add(const char* name, std::vector<bool>* data) {
         } else {
           std::stringstream err;
 
-          err << "Error, key \"" << name << "\" type is " 
+          err << "Error, key \"" << name << "\" type is "
               << JSON_TYPE_NAMES[json_val.GetType()]
               << " but Array<Bool> was expected";
           throw std::runtime_error(err.str());
         }
-
       }
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
+      err << "Error, key \"" << name << "\" type is "
           << JSON_TYPE_NAMES[json_val.GetType()]
           << " but Array<Bool> was expected";
 
@@ -318,7 +310,7 @@ size_t JsonIArchive::get_obj_arr_count(const char* name) {
     } else {
       std::stringstream err;
 
-      err << "Error, key \"" << name << "\" type is " 
+      err << "Error, key \"" << name << "\" type is "
           << JSON_TYPE_NAMES[val.GetType()]
           << " but Array<Object> was expected";
       throw std::runtime_error(err.str());
@@ -331,7 +323,7 @@ size_t JsonIArchive::get_obj_arr_count(const char* name) {
 }
 
 void JsonIArchive::assign_arr_val(const char* name, size_t indx, Model* obj) {
-  rj::Value& val = (*json_root)[name]; 
+  rj::Value& val = (*json_root)[name];
   rj::Value& elem = val[indx];
 
   if (elem.IsObject()) {
@@ -340,26 +332,23 @@ void JsonIArchive::assign_arr_val(const char* name, size_t indx, Model* obj) {
   } else {
     std::stringstream err;
 
-    err << "Error, key \"" << name << "\" type is " 
-        << JSON_TYPE_NAMES[val.GetType()]
-        << " but Array<Object> was expected";
+    err << "Error, key \"" << name << "\" type is "
+        << JSON_TYPE_NAMES[val.GetType()] << " but Array<Object> was expected";
     throw std::runtime_error(err.str());
   }
 }
 
-std::string JsonIArchive::str() {
-  return json_root->GetString();
-}
-
+std::string JsonIArchive::str() { return json_root->GetString(); }
 
 // Json Output Archive
 
 // constructors
 JsonOArchive::JsonOArchive() {
   writer = std::make_shared<rj::Writer<rj::StringBuffer>>(s);
-  writer->StartObject(); 
+  writer->StartObject();
 }
-JsonOArchive::JsonOArchive(std::shared_ptr<rj::Writer<rj::StringBuffer>>& writer) { 
+JsonOArchive::JsonOArchive(
+    std::shared_ptr<rj::Writer<rj::StringBuffer>>& writer) {
   this->writer = writer;
 }
 
@@ -397,28 +386,36 @@ void JsonOArchive::add(const char* name, Model* data) {
 void JsonOArchive::add(const char* name, std::vector<int64_t>* data) {
   writer->Key(name);
   writer->StartArray();
-  for (auto& elem : *data) { writer->Int64(elem); }
+  for (auto& elem : *data) {
+    writer->Int64(elem);
+  }
   writer->EndArray();
 }
 
 void JsonOArchive::add(const char* name, std::vector<double>* data) {
   writer->Key(name);
   writer->StartArray();
-  for (auto& elem : *data) { writer->Double(elem); }
+  for (auto& elem : *data) {
+    writer->Double(elem);
+  }
   writer->EndArray();
 }
 
 void JsonOArchive::add(const char* name, std::vector<std::string>* data) {
   writer->Key(name);
   writer->StartArray();
-  for (auto& elem : *data) { writer->String(elem.c_str()); }
+  for (auto& elem : *data) {
+    writer->String(elem.c_str());
+  }
   writer->EndArray();
 }
 
 void JsonOArchive::add(const char* name, std::vector<bool>* data) {
   writer->Key(name);
   writer->StartArray();
-  for (auto elem : *data) { writer->Bool(elem); }
+  for (auto elem : *data) {
+    writer->Bool(elem);
+  }
   writer->EndArray();
 }
 
@@ -428,13 +425,13 @@ void JsonOArchive::assign_arr_val(const char* name, size_t indx, Model* obj) {
   if (indx == 0) {
     writer->Key(name);
     writer->StartArray();
-  } 
+  }
 
   writer->StartObject();
 
   JsonOArchive oar(writer);
   obj->load_metadata(oar);
-  
+
   writer->EndObject();
   if (indx == static_cast<size_t>(-1)) writer->EndArray();
 }

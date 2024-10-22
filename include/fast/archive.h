@@ -63,6 +63,16 @@ class Archive {
     }
   }
 
+  // handle optionals
+  template <class T>
+  void add(const char* name, std::optional<T>* data) {
+    data->clear();
+
+    T ptr;
+    add(name, &ptr);
+    *data = ptr;
+  }
+
   // we use const char* because they're smaller and never modified
   virtual void add(const char* name, int64_t* data) = 0;
   virtual void add(const char* name, double* data) = 0;
@@ -73,21 +83,6 @@ class Archive {
   virtual void add(const char* name, std::vector<double>* data) = 0;
   virtual void add(const char* name, std::vector<std::string>* data) = 0;
   virtual void add(const char* name, std::vector<bool>* data) = 0;
-
-  virtual void add(const char* name, std::optional<int64_t>* data) = 0;
-  virtual void add(const char* name, std::optional<double*> data) = 0;
-  virtual void add(const char* name, std::optional<std::string*> data) = 0;
-  virtual void add(const char* name, std::optional<bool*> data) = 0;
-  virtual void add(const char* name, std::optional<Model*> data) = 0;
-
-  virtual void add(const char* name,
-                   std::optional<std::vector<int64_t>*> data) = 0;
-  virtual void add(const char* name,
-                   std::optional<std::vector<double>*> data) = 0;
-  virtual void add(const char* name,
-                   std::optional<std::vector<std::string>*> data) = 0;
-  virtual void add(const char* name,
-                   std::optional<std::vector<bool>*> data) = 0;
 
   // helper methods to facilitate serialisation of vectors of objects
   // TODO change these to make sense for input and output

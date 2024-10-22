@@ -31,7 +31,7 @@ class Database {
  public:
   template <DerivedFromModel D>
   DBResult select(const char* stmt, std::vector<D>* obj) {
-    DBResult err;
+    DBResult err {0, ""};
   
     Rows rows;
 
@@ -52,6 +52,8 @@ class Database {
   virtual DBResult assign_row_to_model(Row& row, Model* obj) = 0;
   virtual DBResult query(const char* stmt) = 0;
   virtual void rollback() = 0;
+
+  virtual ~Database() {}
 };
 
 }  // namespace fast

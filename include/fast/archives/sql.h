@@ -28,21 +28,6 @@ class SQLiteIArchive : public SqlArchive {
   void add(const char* name, std::vector<std::string>* data) override;
   void add(const char* name, std::vector<bool>* data) override;
 
-  void add(const char* name, std::optional<int64_t>* data) override;
-  void add(const char* name, std::optional<double*> data) override;
-  void add(const char* name, std::optional<std::string*> data) override;
-  void add(const char* name, std::optional<bool*> data) override;
-  void add(const char* name, std::optional<Model*> data) override;
-
-  void add(const char* name,
-           std::optional<std::vector<int64_t>*> data) override;
-  void add(const char* name,
-           std::optional<std::vector<double>*> data) override;
-  void add(const char* name,
-           std::optional<std::vector<std::string>*> data) override;
-  void add(const char* name,
-                   std::optional<std::vector<bool>*> data) override;
-
   size_t get_obj_arr_count(const char* name) override;
   void assign_arr_val(const char* name, size_t indx, Model* obj) override;
 
