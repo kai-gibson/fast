@@ -18,20 +18,35 @@ class SQLiteIArchive : public SqlArchive {
  public:
   SQLiteIArchive(Row& row);
   // overrides
-  void add(const char* name, int64_t* data);
-  void add(const char* name, double* data);
-  void add(const char* name, std::string* data);
-  void add(const char* name, bool* data);
-  void add(const char* name, Model* data);
-  void add(const char* name, std::vector<int64_t>* data);
-  void add(const char* name, std::vector<double>* data);
-  void add(const char* name, std::vector<std::string>* data);
-  void add(const char* name, std::vector<bool>* data);
+  void add(const char* name, int64_t* data) override;
+  void add(const char* name, double* data) override;
+  void add(const char* name, std::string* data) override;
+  void add(const char* name, bool* data) override;
+  void add(const char* name, Model* data) override;
+  void add(const char* name, std::vector<int64_t>* data) override;
+  void add(const char* name, std::vector<double>* data) override;
+  void add(const char* name, std::vector<std::string>* data) override;
+  void add(const char* name, std::vector<bool>* data) override;
 
-  size_t get_obj_arr_count(const char* name);
-  void assign_arr_val(const char* name, size_t indx, Model* obj);
+  void add(const char* name, std::optional<int64_t>* data) override;
+  void add(const char* name, std::optional<double*> data) override;
+  void add(const char* name, std::optional<std::string*> data) override;
+  void add(const char* name, std::optional<bool*> data) override;
+  void add(const char* name, std::optional<Model*> data) override;
 
-  std::string str();
+  void add(const char* name,
+           std::optional<std::vector<int64_t>*> data) override;
+  void add(const char* name,
+           std::optional<std::vector<double>*> data) override;
+  void add(const char* name,
+           std::optional<std::vector<std::string>*> data) override;
+  void add(const char* name,
+                   std::optional<std::vector<bool>*> data) override;
+
+  size_t get_obj_arr_count(const char* name) override;
+  void assign_arr_val(const char* name, size_t indx, Model* obj) override;
+
+  std::string str() override;
 };
 
 }  // namespace fast

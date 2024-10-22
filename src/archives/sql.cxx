@@ -1,6 +1,7 @@
 #include "fast/archives/sql.h"
 
 #include <cstring>
+#include <sstream>
 
 namespace fast {
 
@@ -90,6 +91,49 @@ void SQLiteIArchive::add(const char* name, std::vector<std::string>* data) {
 void SQLiteIArchive::add(const char* name, std::vector<bool>* data) {
   throw std::runtime_error("arrays not possible in sql");
 }
+
+
+// implement optional types
+void SQLiteIArchive::add(const char* name, std::optional<int64_t>* data) {
+}
+
+void SQLiteIArchive::add(const char* name, std::optional<double*> data) {
+	
+}
+
+void SQLiteIArchive::add(const char* name, std::optional<std::string*> data) {
+	
+}
+
+void SQLiteIArchive::add(const char* name, std::optional<bool*> data) {
+	
+}
+
+void SQLiteIArchive::add(const char* name, std::optional<Model*> data) {
+	
+}
+
+
+void SQLiteIArchive::add(const char* name,
+         std::optional<std::vector<int64_t>*> data) {
+	
+}
+
+void SQLiteIArchive::add(const char* name,
+         std::optional<std::vector<double>*> data) {
+	
+}
+
+void SQLiteIArchive::add(const char* name,
+         std::optional<std::vector<std::string>*> data) {
+}
+
+void add(const char* name,
+                   std::optional<std::vector<bool>*> data) {
+	
+}
+
+
 
 // shouldn't happen
 size_t SQLiteIArchive::get_obj_arr_count(const char* name) {

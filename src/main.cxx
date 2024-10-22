@@ -155,13 +155,13 @@ int main() {
     std::cerr << "error " << err.result_code << " " << err.detail << "\n";
   }
 
-  //err = db->query(std::format(R"(
-  //  INSERT INTO tbl_users 
-  //    (id, name, address) 
-  //  VALUES ({}, {}, {}))",
-  //      10, "\"uzbekh\"", "\"Dagestan\"").c_str());
+  err = db->query(std::format(R"(
+    INSERT INTO tbl_users 
+      (id, name, address) 
+    VALUES ({}, {}, {}))",
+        10, "\"uzbekh\"", "\"Dagestan\"").c_str());
 
   if (err) {
-    std::cerr << "error inserting: " << err.detail << "\n";
+    std::cerr << "error " << err.result_code << " " << err.detail << "\n";
   } 
 }

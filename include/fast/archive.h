@@ -1,14 +1,9 @@
 #ifndef ARCHIVE_H
 #define ARCHIVE_H
 
-#include <array>
-#include <sstream>
-#include <stdexcept>
-#include <string> 
-#include <unordered_map>
-#include <variant>
+#include <optional>
+#include <string>
 #include <vector>
-#include <type_traits>
 
 #include "fast/model.h"
 
@@ -36,7 +31,7 @@ concept DerivedFromModel = std::derived_from<T, Model>;
 
 class Archive {
  public:
-  template<DerivedFromModel D>
+  template <DerivedFromModel D>
   void add(const char* name, std::vector<D>* data) {
     // base method demands enough elements in vector, then passes on to other
     // derived add methods?
@@ -50,14 +45,14 @@ class Archive {
       data->clear();
 
       // create enough elements
-      for (size_t i=0; i < requested_size; i++) {
+      for (size_t i = 0; i < requested_size; i++) {
         data->push_back(D());
         assign_arr_val(name, i, &data->back());
       }
     } else {
       // output archive
-      for (size_t i{}; i<data->size(); i++) {
-        if (i == data->size()-1) {
+      for (size_t i{}; i < data->size(); i++) {
+        if (i == data->size() - 1) {
           assign_arr_val("", -1, &data->at(i));
         } else if (i == 0) {
           assign_arr_val(name, i, &data->at(i));
@@ -67,6 +62,7 @@ class Archive {
       }
     }
   }
+
   // we use const char* because they're smaller and never modified
   virtual void add(const char* name, int64_t* data) = 0;
   virtual void add(const char* name, double* data) = 0;
@@ -78,6 +74,20 @@ class Archive {
   virtual void add(const char* name, std::vector<std::string>* data) = 0;
   virtual void add(const char* name, std::vector<bool>* data) = 0;
 
+  virtual void add(const char* name, std::optional<int64_t>* data) = 0;
+  virtual void add(const char* name, std::optional<double*> data) = 0;
+  virtual void add(const char* name, std::optional<std::string*> data) = 0;
+  virtual void add(const char* name, std::optional<bool*> data) = 0;
+  virtual void add(const char* name, std::optional<Model*> data) = 0;
+
+  virtual void add(const char* name,
+                   std::optional<std::vector<int64_t>*> data) = 0;
+  virtual void add(const char* name,
+                   std::optional<std::vector<double>*> data) = 0;
+  virtual void add(const char* name,
+                   std::optional<std::vector<std::string>*> data) = 0;
+  virtual void add(const char* name,
+                   std::optional<std::vector<bool>*> data) = 0;
 
   // helper methods to facilitate serialisation of vectors of objects
   // TODO change these to make sense for input and output
