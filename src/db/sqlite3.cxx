@@ -56,7 +56,7 @@ void SQLite::rollback() {
 }
 
 DBResult SQLite::populate_rows(const char* stmt, Rows* rows) {
-  DBResult err;
+  DBResult err{};
 
   char* err_msg;
   int rc = sqlite3_exec(db, stmt, &sqlite::callback, (void*)rows, &err_msg);
@@ -72,7 +72,7 @@ DBResult SQLite::populate_rows(const char* stmt, Rows* rows) {
 }
 
 DBResult SQLite::assign_row_to_model(Row& row, Model* obj) {
-  DBResult err;
+  DBResult err {};
   SQLiteIArchive iar(row);
 
   try {

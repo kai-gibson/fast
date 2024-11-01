@@ -6,6 +6,8 @@
 #include "fast/archive.h"
 #include "fast/model.h"
 #include <unordered_map>
+#include <vector>
+#include <string>
 
 namespace fast {
 

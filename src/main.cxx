@@ -133,9 +133,8 @@ int main() {
     int64_t id;
     std::string name;
     std::string address;
-    double balance;
 
-    FAST_LOAD_METADATA(id, name, address, balance);
+    FAST_LOAD_METADATA(id, name, address);
   };
 
   using fast::DBProvider;

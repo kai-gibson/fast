@@ -30,7 +30,7 @@ void SQLiteIArchive::add(const char* name, double* data) {
       *data = std::stod(row[name]);
     } catch (std::exception& e) {
       std::stringstream err;
-      err << "error converting sql column to int64_t: " << e.what();
+      err << "error converting sql column to double: " << e.what();
       throw std::runtime_error(err.str());
     }
   } else {
@@ -91,8 +91,6 @@ void SQLiteIArchive::add(const char* name, std::vector<std::string>* data) {
 void SQLiteIArchive::add(const char* name, std::vector<bool>* data) {
   throw std::runtime_error("arrays not possible in sql");
 }
-
-
 
 
 
